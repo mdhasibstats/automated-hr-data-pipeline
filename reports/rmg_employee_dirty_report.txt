@@ -1,0 +1,73 @@
+====================================================================================================
+DATA QUALITY REPORT
+====================================================================================================
+
+-------------Data Shape: Before ==> After-----------------
+Rows: 5120 => 5000
+Columns: 17 => 21
+
+--------------Null values: before => after-----------------
+age: 101 ==> 0
+gender: 37 ==> 36
+blood_group: 72 ==> 71
+designation: 76 ==> 74
+basic_salary: 16 ==> 0
+total_salary: 101 ==> 100
+phone: 111 ==> 129
+join_date: 57 ==> 109
+attendance_pct: 154 ==> 190
+email: 36 ==> 35
+nid: 81 ==> 161
+experience_yrs: 39 ==> 88
+
+-------------Cleaning Steps Applied-----------------
+ - ✅ Duplicates handled ==> Removed: 111 | Remaining: 5009
+ - ✅ Successfully standardized all column names.
+ - ✅ Deduplication ==> Removed 9 duplicate rows based on 'employee_id'.
+ - ✅ Column 'employee_id' successfully cleaned and anchored.
+ - ✅ Phone Cleaner ==> Successfully validated 4871 numbers. (20 unparseable entries flagged as NaN).
+ - ✅ Replaced 161 invalid or duplicate IDs in 'nid' with <NA>.
+ - ✅ Cleaned numeric columns: ['age']
+ - ✅ Cleaned currency column: 'basic_salary'
+ - ✅ Cleaned date columns: ['join_date']
+ - ✅ Coerced   30 rows to NaN in 'age' (Min: 18 | Max: 60)
+ - ✅ Verified 'basic_salary': All values within specified limits.
+ - ✅ Verified 'bonus': All values within specified limits.
+ - ✅ Coerced   40 rows to NaN in 'attendance_pct' (Min: 0 | Max: 100)
+ - ✅ Coerced   50 rows to NaN in 'experience_yrs' (Min: 0 | Max: 40)
+ - ✅ Successfully cleaned column: 'department'
+ - ✅ Successfully cleaned column: 'division'
+ - ✅ Name Audit Complete: Found 150 mixed-script discrepancies.
+ - ✅ Standardized 4850 verified employee names.
+ - ✅ Filled  130 missing values in 'age' using mean. Audit flag: 'age_imputed'
+ - ✅ Filled   15 missing values in 'basic_salary' using median. Audit flag: 'basic_salary_imputed'
+ - ✅ Validation Column 'salary_status' created successfully. 447 discrepancies flagged.
+
+-------------Audit Columns Added-----------------
+ Flag: name_status
+ Flag: age_imputed
+ Flag: basic_salary_imputed
+ Flag: salary_status
+
+-------------Data Types After Cleaning-----------------
+employee_id : object
+employee_name : object
+age : int64
+gender : object
+blood_group : object
+department : string
+designation : object
+division : string
+basic_salary : float64
+bonus : int64
+total_salary : float64
+phone : object
+join_date : datetime64[ns]
+attendance_pct : float64
+email : object
+nid : string
+experience_yrs : float64
+name_status : object
+age_imputed : bool
+basic_salary_imputed : bool
+salary_status : object
