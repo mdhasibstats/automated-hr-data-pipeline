@@ -4,7 +4,7 @@ DATA QUALITY REPORT
 
 -------------Data Shape: Before ==> After-----------------
 Rows: 5120 => 5000
-Columns: 17 => 21
+Columns: 17 => 25
 
 --------------Null values: before => after-----------------
 age: 101 ==> 0
@@ -15,7 +15,7 @@ basic_salary: 16 ==> 0
 total_salary: 101 ==> 100
 phone: 111 ==> 129
 join_date: 57 ==> 109
-attendance_pct: 154 ==> 190
+attendance_pct: 154 ==> 150
 email: 36 ==> 35
 nid: 81 ==> 161
 experience_yrs: 39 ==> 88
@@ -26,25 +26,30 @@ experience_yrs: 39 ==> 88
  - ✅ Deduplication ==> Removed 9 duplicate rows based on 'employee_id'.
  - ✅ Column 'employee_id' successfully cleaned and anchored.
  - ✅ Phone Cleaner ==> Successfully validated 4871 numbers. (20 unparseable entries flagged as NaN).
- - ✅ Replaced 161 invalid or duplicate IDs in 'nid' with <NA>.
+ - ✅ NID Audit ==> 80 invalid-format value(s), 81 duplicate value(s) found in 'nid'. Both set to <NA> in-place; see 'nid_status' to distinguish which is which.
  - ✅ Cleaned numeric columns: ['age']
  - ✅ Cleaned currency column: 'basic_salary'
  - ✅ Cleaned date columns: ['join_date']
- - ✅ Coerced   30 rows to NaN in 'age' (Min: 18 | Max: 60)
+ - ⚠️ Flagged   30 out-of-bounds rows in 'age' via 'age_out_of_bounds' (Min: 18 | Max: 60). Values were NOT modified.
  - ✅ Verified 'basic_salary': All values within specified limits.
  - ✅ Verified 'bonus': All values within specified limits.
- - ✅ Coerced   40 rows to NaN in 'attendance_pct' (Min: 0 | Max: 100)
+ - ⚠️ Flagged   40 out-of-bounds rows in 'attendance_pct' via 'attendance_pct_out_of_bounds' (Min: 0 | Max: 100). Values were NOT modified.
  - ✅ Coerced   50 rows to NaN in 'experience_yrs' (Min: 0 | Max: 40)
  - ✅ Successfully cleaned column: 'department'
  - ✅ Successfully cleaned column: 'division'
  - ✅ Name Audit Complete: Found 150 mixed-script discrepancies.
  - ✅ Standardized 4850 verified employee names.
- - ✅ Filled  130 missing values in 'age' using mean. Audit flag: 'age_imputed'
- - ✅ Filled   15 missing values in 'basic_salary' using median. Audit flag: 'basic_salary_imputed'
- - ✅ Validation Column 'salary_status' created successfully. 447 discrepancies flagged.
+ - ✅ Successfully repaired 60 rows where basic salary was missing/0 using basic_salary = total_salary - bonus. Flagged via 'basic_salary_derived_from_total' — note these rows will trivially satisfy salary validation since basic was derived from total, not independently confirmed.
+ - ✅ Filled  100 missing values in 'age' using mean. Audit flag: 'age_imputed'
+ - ✅ Filled    3 missing values in 'basic_salary' using median. Audit flag: 'basic_salary_imputed'
+ - ✅ Validation Column 'salary_status' created successfully. 387 discrepancies flagged. Note: 60 of the 'Verified' rows had 'basic_salary' derived from total_salary - bonus earlier in the pipeline, so they are verified by construction, not independent confirmation.
 
 -------------Audit Columns Added-----------------
+ Flag: nid_status
+ Flag: age_out_of_bounds
+ Flag: attendance_pct_out_of_bounds
  Flag: name_status
+ Flag: basic_salary_derived_from_total
  Flag: age_imputed
  Flag: basic_salary_imputed
  Flag: salary_status
@@ -67,7 +72,11 @@ attendance_pct : float64
 email : object
 nid : string
 experience_yrs : float64
+nid_status : object
+age_out_of_bounds : bool
+attendance_pct_out_of_bounds : bool
 name_status : object
+basic_salary_derived_from_total : bool
 age_imputed : bool
 basic_salary_imputed : bool
 salary_status : object
